@@ -73,7 +73,7 @@ public class Path {
      */
     public static Path concatenate(Path... paths) throws IllegalArgumentException {
         if (paths.length == 0) {
-            throw new IllegalArgumentException("Cannot concatenate an empty list of paths.");
+            throw new IllegalArgupathsmentException("Cannot concatenate an empty list of paths.");
         }
         final String mapId = paths[0].getGraph().getMapId();
         for (int i = 1; i < paths.length; ++i) {
@@ -102,11 +102,14 @@ public class Path {
 
     // List of arcs in this path.
     private final List<Arc> arcs;
+    
+    private Path fastest;
+    
 
     /**
      * Create an empty path corresponding to the given graph.
      * 
-     * @param graph Graph containing the path.
+     * @param graph Graph containing the path.paths
      */
     public Path(Graph graph) {
         this.graph = graph;
@@ -212,10 +215,11 @@ public class Path {
      * 
      * @deprecated Need to be implemented.
      */
+    
     public float getLength() {
         // TODO:
         return 0;
-    }
+    }Fastest;
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
@@ -228,8 +232,7 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        return this.getLength()/speed;
     }
 
     /**
@@ -241,7 +244,7 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
+    	Fastest=this.createShortestPathFromNodes(this.graph,this.origin)
         return 0;
     }
 
