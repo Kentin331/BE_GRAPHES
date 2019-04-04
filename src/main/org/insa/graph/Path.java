@@ -217,9 +217,14 @@ public class Path {
      */
     
     public float getLength() {
-        // TODO:
-        return 0;
-    }Fastest;
+
+    	float len = 0;
+        List <Arc> arcs = this.getArcs();
+        for(Arc arc : arcs) {
+        	len = len + arc.getLength();
+        }
+        return len;
+    }
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
