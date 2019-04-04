@@ -103,7 +103,6 @@ public class Path {
     // List of arcs in this path.
     private final List<Arc> arcs;
     
-    private Path fastest;
     
 
     /**
@@ -241,9 +240,7 @@ public class Path {
      * Compute the length of this path (in meters).
      * 
      * @return Total length of the path (in meters).
-     * 
-     *Need to be implemented.
-     */
+     * */
     
     public float getLength() {
 
@@ -263,8 +260,11 @@ public class Path {
      * @return Time (in seconds) required to travel this path at the given speed (in
      *         kilometers-per-hour).
      * 
-     *
+     * .
      */
+   /* public double getTravelTime(double speed) {
+        return ((double)this.getLength()*3.6)/speed; */
+    
     public double getTravelTime(double speed) {
         double time = 0;
         for(Arc arc : this.getArcs()) {
@@ -278,12 +278,15 @@ public class Path {
      * on every arc.
      * 
      * @return Minimum travel time to travel this path (in seconds).
-     * 
-     * @deprecated Need to be implemented.
-     */
+     **/
     public double getMinimumTravelTime() {
-    	//Fastest=this.createShortestPathFromNodes(this.graph,this.origin)
-        return 0;
+    	double time = 0;
+        List <Arc> arcs = this.getArcs();
+        for(Arc arc : arcs) {
+        	time = time + arc.getMinimumTravelTime();
+        }
+        return time;
+
     }
 
 }
