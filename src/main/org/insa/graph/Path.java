@@ -286,7 +286,6 @@ public class Path {
         	time = time + arc.getMinimumTravelTime();
         }
         return time;
-
     }
 
 }
