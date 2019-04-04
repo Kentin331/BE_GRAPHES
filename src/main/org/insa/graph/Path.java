@@ -238,9 +238,8 @@ public class Path {
      */
     public double getTravelTime(double speed) {
         double time = 0;
-        List <Arc> arcs = this.getArcs();
-        for(Arc arc : arcs) {
-        	time = time + arc.getTravelTime(speed);
+        for(Arc arc : this.getArcs()) {
+        	time += arc.getTravelTime(speed);
         }
         return(time);
     }
