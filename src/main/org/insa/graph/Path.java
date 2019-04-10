@@ -34,7 +34,7 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
+      /*  List<Arc> arcs = new ArrayList<Arc>();
         List<Arc> successeurs = new ArrayList<Arc>();
         Arc arc_fastest=null;
         Double fastest=0.0;
@@ -52,7 +52,43 @@ public class Path {
         	arcs.add(arc_fastest);
         }
         	
-        // TODO:
+        // TODO: */
+    	
+    	int successors;
+    	int last = nodes.size()-1;
+    	int check;
+    	Arc fastest_arc;
+        List<Arc> arcs = new ArrayList<Arc>();
+        List<Arc> g_arcs = new ArrayList<Arc>();
+        
+        if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 ou 0 noeud
+        
+        for(Node node : nodes) {  
+        	if(node.getId() != nodes.get(last).getId()) {       	
+        	
+	        	successors = node.getNumberOfSuccessors();
+	        	g_arcs = node.getSuccessors();
+	        	
+	        	if(successors > 1) {
+	        		fastest_arc = g_arcs.get(0);        		
+	        		
+	        		for(Arc arc : g_arcs) {
+	        			for (Arc successeur : g_arcs) {
+		        			if(arc.getDestination()==successeur.getDestination() && arc.getMinimumTravelTime() < fastest_arc.getMinimumTravelTime()) {
+		        				fastest_arc = arc;
+		        			}        		
+		        		 }
+	        		}
+	        		arcs.add(fastest_arc);
+	        	}
+	        	else
+	        	{
+	        		
+	        		if (successors == 1 && g_arcs.get(0).getDestination()==node) arcs.add(g_arcs.get(0));
+	        	}
+        	}
+        	
+        }
         return new Path(graph, arcs);
     }
 
