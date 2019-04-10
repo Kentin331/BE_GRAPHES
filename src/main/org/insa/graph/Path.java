@@ -38,7 +38,8 @@ public class Path {
     	int last = nodes.size()-1;
     	int index = -1;
     	int check =0;
-    	Arc fastest_arc = null;
+    	Arc shortest_arc = null;
+
         List<Arc> arcs = new ArrayList<Arc>();
         List<Arc> g_arcs = new ArrayList<Arc>();
         
@@ -48,13 +49,12 @@ public class Path {
         	index ++;
         	
         	if(node.getId() != nodes.get(last).getId()) {       	
-        	
 	        	g_arcs = node.getSuccessors();
 	        	check = 0;
 	        		        		
         		for(Arc arc : g_arcs) {
-	        		if(arc.getDestination() == nodes.get(index+1) && check ==0) {	        		
-	        			fastest_arc = arc; 
+	        		if(arc.getDestination() == nodes.get(index+1) && check ==0) {        		
+	        			shortest_arc = arc; 
 	        			check = 1;
 	        		}
         		}       		
@@ -62,16 +62,19 @@ public class Path {
         		for(Arc arc : g_arcs) {
         			if(arc.getDestination() == nodes.get(index+1)) {
         				
-	        			if(arc.getMinimumTravelTime() < fastest_arc.getMinimumTravelTime()) {
-	        				fastest_arc = arc;
+	        			if(arc.getMinimumTravelTime() < shortest_arc.getMinimumTravelTime()) {
+	        				shortest_arc = arc;
 	        			}     
 	        		
         			}
         		}
-        		arcs.add(fastest_arc);
+
+        		arcs.add(shortest_arc);
 	        }
 	 
         }
+        	
+        
         return new Path(graph, arcs);
     }
 
