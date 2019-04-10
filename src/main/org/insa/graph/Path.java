@@ -34,22 +34,38 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
+    	
         List<Arc> arcs = new ArrayList<Arc>();
         List<Arc> successeurs = new ArrayList<Arc>();
-        Arc arc_fastest=null;
-        Double fastest=0.0;
-        Double fast_compare=0.0;
+        int nb_successeurs;
+        Arc arc_fastest;
+        int last = nodes.size()-1;
         
-        for (Node node : nodes) {
-        	successeurs=node.getSuccessors();
-        	for (Arc successeur : successeurs) {
-        		fast_compare=successeur.getMinimumTravelTime();
-        		if (successeur.getDestination()==node && fast_compare<fastest && fastest!=0.0) {	        				
-        			fastest=fast_compare;
-        			arc_fastest=successeur;
-        		}
+        if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 ou 0 noeud
+        		
+        for(Node node : nodes) {  
+        	
+        	if(node.getId() != nodes.get(last).getId()) {       	
+        	
+	        	nb_successeurs = node.getNumberOfSuccessors();
+	        	successeurs = node.getSuccessors();
+	        	
+	        	if(nb_successeurs > 1) {
+	        		
+	        		arc_fastest = successeurs.get(0);        		
+	        		
+	        		for(Arc arc : successeurs) {
+	        			if(arc.getMinimumTravelTime() < arc_fastest.getMinimumTravelTime()) {
+	        				arc_fastest = arc;
+	        			}        			
+	        		}
+	        		arcs.add(arc_fastest);
+	        	}
+	        	else
+	        	{
+	        		if (nb_successeurs == 1) arcs.add(successeurs.get(0));
+	        	}
         	}
-        	arcs.add(arc_fastest);
         }
         	
         // TODO:
@@ -73,39 +89,46 @@ public class Path {
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
     	
-    	int successors;
     	int last = nodes.size()-1;
-    	Arc shortest_arc;
+    	int index = -1;
+    	int check =0;
+    	Arc shortest_arc = null;
         List<Arc> arcs = new ArrayList<Arc>();
         List<Arc> g_arcs = new ArrayList<Arc>();
         
         if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 ou 0 noeud
         
         for(Node node : nodes) {  
+        	index ++;
         	
         	if(node.getId() != nodes.get(last).getId()) {       	
         	
 	        	successors = node.getNumberOfSuccessors();
 	        	g_arcs = node.getSuccessors();
-	        	
-	        	if(successors > 1) {
-	        		
-	        		shortest_arc = g_arcs.get(0);        		
-	        		
-	        		for(Arc arc : g_arcs) {
+	        	check = 0;
+	        		        		
+        		for(Arc arc : g_arcs) {
+	        		if(arc.getDestination() == nodes.get(index+1) && check ==0) {	        		
+	        			shortest_arc = arc; 
+	        			check = 1;
+	        		}
+        		}       		
+        		
+        		for(Arc arc : g_arcs) {
+        			if(arc.getDestination() == nodes.get(index+1)) {
+        				
 	        			if(arc.getLength() < shortest_arc.getLength()) {
 	        				shortest_arc = arc;
-	        			}        			
-	        		}
-	        		arcs.add(shortest_arc);
-	        	}
-	        	else
-	        	{
-	        		if (successors == 1) arcs.add(g_arcs.get(0));
-	        	}
-        	}
-        	
+	        			}     
+	        		
+        			}
+        		}
+        		arcs.add(shortest_arc);
+	        }
+	 
         }
+        	
+        
         return new Path(graph, arcs);
     }
 
