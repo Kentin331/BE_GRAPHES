@@ -44,6 +44,7 @@ public class Path {
         List<Arc> g_arcs = new ArrayList<Arc>();
         
         if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 ou 0 noeud
+        if(last == -1) return(new Path(graph));
         
         for(Node node : nodes) {  
         	index ++;
@@ -94,6 +95,7 @@ public class Path {
     
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
+    	
     	
     	int last = nodes.size()-1;
     	int index = -1;
