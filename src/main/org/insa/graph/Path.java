@@ -37,7 +37,7 @@ public class Path {
     	
     	int last = nodes.size()-1;
     	int index = -1;
-    	int check =0;
+    	int check =0, except = -1;
     	Arc shortest_arc = null;
 
         List<Arc> arcs = new ArrayList<Arc>();
@@ -52,6 +52,7 @@ public class Path {
         	if(node.getId() != nodes.get(last).getId()) {       	
 	        	g_arcs = node.getSuccessors();
 	        	check = 0;
+	        	except = -1;
 	        		        		
         		for(Arc arc : g_arcs) {
 	        		if(arc.getDestination() == nodes.get(index+1) && check ==0) {        		
@@ -63,6 +64,7 @@ public class Path {
         		for(Arc arc : g_arcs) {
         			if(arc.getDestination() == nodes.get(index+1)) {
         				
+        				except = 0;         				
 	        			if(arc.getMinimumTravelTime() < shortest_arc.getMinimumTravelTime()) {
 	        				shortest_arc = arc;
 	        			}     
@@ -70,7 +72,8 @@ public class Path {
         			}
         		}
 
-        		arcs.add(shortest_arc);
+        		if(except == 0) arcs.add(shortest_arc);
+        		else throw new IllegalArgumentException("Chemin incorrect");
 	        }
 	 
         }
@@ -99,12 +102,14 @@ public class Path {
     	
     	int last = nodes.size()-1;
     	int index = -1;
-    	int check =0;
+    	int check =0,except=-1;
     	Arc shortest_arc = null;
         List<Arc> arcs = new ArrayList<Arc>();
         List<Arc> g_arcs = new ArrayList<Arc>();
         
-        if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 ou 0 noeud
+        if(last == 0) return(new Path(graph, nodes.get(0))); // dans le cas où on n'a une liste contenant 1 noeud
+        
+        if(last == -1) return(new Path(graph)); // liste sans noeud
         
         for(Node node : nodes) {  
         	index ++;
@@ -113,6 +118,7 @@ public class Path {
         	
 	        	g_arcs = node.getSuccessors();
 	        	check = 0;
+	        	except = -1;
 	        		        		
         		for(Arc arc : g_arcs) {
 	        		if(arc.getDestination() == nodes.get(index+1) && check ==0) {	        		
@@ -124,13 +130,16 @@ public class Path {
         		for(Arc arc : g_arcs) {
         			if(arc.getDestination() == nodes.get(index+1)) {
         				
+        				except = 0;        				
 	        			if(arc.getLength() < shortest_arc.getLength()) {
 	        				shortest_arc = arc;
+	        				
 	        			}     
 	        		
         			}
         		}
-        		arcs.add(shortest_arc);
+        		if(except == 0) arcs.add(shortest_arc);
+        		else throw new IllegalArgumentException("Chemin incorrect");
 	        }
 	 
         }
