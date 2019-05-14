@@ -24,7 +24,7 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     private int currentSize;
 
     // The heap array.
-    private final ArrayList<E> array;
+    public final ArrayList<E> array;
 
     /**
      * Construct a new empty binary heap.
@@ -160,7 +160,7 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         if(this.array.isEmpty()) throw new ElementNotFoundException("Tas vide");
         index = this.array.indexOf(x);
         //Element non trouvé -> throw exception
-        if(index == -1 || index >= this.currentSize) throw new ElementNotFoundException(x);
+        if(index == -1 || index >= this.currentSize) throw new ElementNotFoundException("Element non trouvé");
         
         //Element trouvé -> suppression
         else {
@@ -197,6 +197,8 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         this.percolateDown(0);
         return minItem;
     }
+    
+
 
     /**
      * Prints the heap
