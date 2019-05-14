@@ -161,7 +161,7 @@ public class Path {
      */
     public static Path concatenate(Path... paths) throws IllegalArgumentException {
         if (paths.length == 0) {
-            throw new IllegalArgupathsmentException("Cannot concatenate an empty list of paths.");
+            throw new IllegalArgumentException("Cannot concatenate an empty list of paths.");
         }
         final String mapId = paths[0].getGraph().getMapId();
         for (int i = 1; i < paths.length; ++i) {
