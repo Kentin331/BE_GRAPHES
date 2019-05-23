@@ -2,7 +2,6 @@ package org.insa.algo.shortestpath;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.insa.graph.Node;
 
 public class Label implements Comparable<Label>{
@@ -15,7 +14,7 @@ public class Label implements Comparable<Label>{
 	private boolean inTas;
 	
 	
-	public Label(Node s) {
+	public Label(Node s, Node d) {
 		this.sommet_courant = s;
 		this.marque = false;
 		this.cout = Double.POSITIVE_INFINITY;
@@ -26,9 +25,9 @@ public class Label implements Comparable<Label>{
 	public Double getCost() {
 		return(this.cout);
 	}
-	
+	@Override
 	public int compareTo(Label autre) {
-		return(0);
+		return(Double.compare(this.getCost(), autre.getCost()));
 	}
 	
 	public Node get_smt() {
@@ -62,6 +61,10 @@ public class Label implements Comparable<Label>{
 	
 	public void setinTas() {
 		this.inTas = true;
+	}
+	
+	public Double get_total_cost() {
+		return(this.cout);
 	}
 	
 }
