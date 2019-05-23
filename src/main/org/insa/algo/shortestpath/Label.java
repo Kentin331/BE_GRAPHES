@@ -26,9 +26,9 @@ public class Label implements Comparable<Label>{
 	public Double getCost() {
 		return(this.cout);
 	}
-	
+	@Override
 	public int compareTo(Label autre) {
-		return(0);
+		return(Double.compare(this.getCost(), autre.getCost()));
 	}
 	
 	public Node get_smt() {

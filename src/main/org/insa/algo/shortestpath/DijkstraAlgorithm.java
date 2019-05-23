@@ -49,43 +49,31 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         // Notify observers about the first event (origin processed).
         notifyOriginProcessed(data.getOrigin());
+        
+        Boolean end = false;
+        Label courant = null;
 
         
         // While nodes not marked exist
-        while(tas_label.isEmpty() == false) {
+        while(tas_label.isEmpty() == false && end == false) {
+        	       	
+        	courant = tas_label.deleteMin();
+        	courant.setmarque();  
+        	notifyNodeMarked(courant.get_smt()); 
         	
-        	int index = 0;
-        	Double mincout = Double.POSITIVE_INFINITY;
-        	for(int i =0; i< tas_label.size(); i++) {
-        		Label lab = tas_label.array.get(i);
-        		Double cout = lab.getCost();
-        		if(cout < mincout) {
-        			mincout = cout;
-        			index = i;
-        		}
-        	}
-        	
-        	Label courant = tas_label.array.get(index);
-        	tas_label.remove(courant);
-        	courant.setmarque();       	
+        	if(courant.get_smt() == data.getDestination()) end = true;
 
         	
         	//parcours des successeurs
-        	List<Arc> arcs = courant.get_smt().getSuccessors();  
+        	List<Arc> arcs = courant.get_smt().getSuccessors();     	
         	
-        	       	
-        	for (int i = 0; i<nbNodes; i++) {
-        		test[i] = false;
-        	}
         	
         	for(Arc arc : arcs) {
         		
         		if(arc.getOrigin() != courant.get_smt()) {
         			continue;
         		}
-        		if(test[arc.getDestination().getId()] == true) {
-        			continue;
-        		}
+        		
         		if(list_label[arc.getDestination().getId()]!= null) {        			
         			if(tas_label.array.contains(list_label[arc.getDestination().getId()])==false) {
         				continue;
@@ -94,9 +82,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		
         		
         		
-        		test[arc.getDestination().getId()]=true;
-        		//System.out.println("Sommet " + arc.getDestination().getId() + " en visite");
-        		
+       
         		
         		//chemin empruntable
         		if(data.isAllowed(arc)==false) continue;
@@ -121,10 +107,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         					tas_label.insert(successor_label);
         					successor_label.setpere(courant.get_smt());
         					successor_label.setinTas();
+        					notifyNodeReached(successor_label.get_smt()); 
         				}
         				else if(successor_label.getCost() > courant.getCost() + data.getCost(arc)) {
         					successor_label.setCout(courant.getCost() + (float)data.getCost(arc));
         					successor_label.setpere(courant.get_smt());
+        					
         					//if this label is already in the heap we update it position
         	        		if(successor_label.getinTas() == true) {
         	        			tas_label.remove(successor_label);
@@ -132,16 +120,35 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	        		else {
         	        			successor_label.setinTas();        			
         	        		}   
-        	        		tas_label.insert(successor_label);        				
+        	        		tas_label.insert(successor_label);   
+        	        		notifyNodeReached(successor_label.get_smt()); 
         				} 
         		  }
         		
         	}
          } //Fin WHILE
         
+        notifyDestinationReached(data.getDestination());
+        
+        
+        ArrayList<Arc> farc = new ArrayList<Arc>();
+        Node Dest = data.getDestination();
+        Node node_courante = courant.get_smt();   
+        Arc prev_arc = null;
+        Node predecesseur = courant.getpere();
+
+        List<Arc> arcs = predecesseur.getSuccessors();
+    	for(Arc a : arcs) {
+    		if(Dest == a.getDestination() && a.getOrigin() == predecesseur) {
+    			farc.add(a);
+    			prev_arc = a;
+    		}
+    	 }
+    	
+    	System.out.println("Arc " + prev_arc.getOrigin().getId() + "->" + prev_arc.getDestination().getId());
        
         
-        Node Dest = data.getDestination();
+        /*Node Dest = data.getDestination();
         ArrayList<Arc> farc = new ArrayList<Arc>();
         Node node_courante = null;
         Arc prev_arc = null;
@@ -162,7 +169,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	        	 }
         	}
         	
-          }
+          }*/
         
  
         
@@ -175,8 +182,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 		        	if(l.get_smt() == prev_arc.getOrigin()) {
 		        		//regarder le pere
 		        		for(Node n : graph.getNodes()) {
-		                	List<Arc> arcs = n.getSuccessors();
-		                	for(Arc a : arcs) {
+		                	List<Arc> arcs1 = n.getSuccessors();
+		                	for(Arc a : arcs1) {
 		                		if(n == l.getpere() && l.get_smt() == a.getDestination() && a.getOrigin() == n) {
 		                			farc.add(a);
 		                			prev_arc = a;
@@ -188,6 +195,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		}
         	}
         }
+    	
+ 
 
  			// Reverse the path
  			Collections.reverse(farc);
