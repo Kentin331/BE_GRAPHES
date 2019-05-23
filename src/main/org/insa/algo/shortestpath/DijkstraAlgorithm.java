@@ -26,6 +26,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     @Override
     protected ShortestPathSolution doRun() {
     	
+    	boolean end=false;
         ShortestPathData data = getInputData();
         ShortestPathSolution solution = null;
 
@@ -48,11 +49,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 		first_label.setCout(0);
 
         // Notify observers about the first event (origin processed).
-        notifyOriginProcessed(data.getOrigin());
+		notifyOriginProcessed(data.getOrigin());
 
         
         // While nodes not marked exist
-        while(tas_label.isEmpty() == false) {
+        while(tas_label.isEmpty() == false && end==false) {
         	
         	int index = 0;
         	Double mincout = Double.POSITIVE_INFINITY;
@@ -68,24 +69,26 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	Label courant = tas_label.array.get(index);
         	tas_label.remove(courant);
         	courant.setmarque();       	
-
+        	notifyNodeMarked(courant.get_smt());
+        	
+        	if(courant.get_smt() == data.getDestination()) end = true;
         	
         	//parcours des successeurs
         	List<Arc> arcs = courant.get_smt().getSuccessors();  
         	
         	       	
-        	for (int i = 0; i<nbNodes; i++) {
-        		test[i] = false;
-        	}
+        	//for (int i = 0; i<nbNodes; i++) {
+        	//	test[i] = false;
+        	//}
         	
         	for(Arc arc : arcs) {
         		
         		if(arc.getOrigin() != courant.get_smt()) {
         			continue;
         		}
-        		if(test[arc.getDestination().getId()] == true) {
-        			continue;
-        		}
+        		//if(test[arc.getDestination().getId()] == true) {
+        		//	continue;
+        		//}
         		if(list_label[arc.getDestination().getId()]!= null) {        			
         			if(tas_label.array.contains(list_label[arc.getDestination().getId()])==false) {
         				continue;
@@ -121,6 +124,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         					tas_label.insert(successor_label);
         					successor_label.setpere(courant.get_smt());
         					successor_label.setinTas();
+        					notifyNodeReached(successor_label.get_smt());
         				}
         				else if(successor_label.getCost() > courant.getCost() + data.getCost(arc)) {
         					successor_label.setCout(courant.getCost() + (float)data.getCost(arc));
@@ -132,16 +136,15 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	        		else {
         	        			successor_label.setinTas();        			
         	        		}   
-        	        		tas_label.insert(successor_label);        				
+        	        		tas_label.insert(successor_label);
+        					notifyNodeReached(successor_label.get_smt());
         				} 
         		  }
         		
         	}
          } //Fin WHILE
-        
-       
-        
         Node Dest = data.getDestination();
+        notifyDestinationReached(Dest);
         ArrayList<Arc> farc = new ArrayList<Arc>();
         Node node_courante = null;
         Arc prev_arc = null;
