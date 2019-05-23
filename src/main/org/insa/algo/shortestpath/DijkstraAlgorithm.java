@@ -55,6 +55,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         
         Node Origin = data.getOrigin();
         Node Dest = data.getDestination();
+        Node pere[] = new Node[nbNodes];
         Boolean stop = false;
         
         ArrayList<Arc> arcs_retour = new ArrayList<Arc>();
@@ -84,14 +85,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	if(courant.get_smt() != data.getOrigin()) {
         	stop = false;
         	
-	        	List<Arc> arcs_pere = courant.getpere().getSuccessors();
+	        	List<Arc> arcs_rapid = courant.getpere().getSuccessors();
 	        	
-	        	for(Arc a : arcs_pere) {
+	        	for(Arc a : arcs_rapid) {
 	        		if(a.getOrigin() == courant.getpere() && a.getDestination() == courant.get_smt() && stop == false) {
 	        			arcs_retour.add(a);
 	        			stop = true;
-	        			System.out.println("COurant = " + courant.get_smt().getId());
-	        			System.out.println("Ajout de l'arc de " + a.getOrigin().getId() + " vers " + a.getDestination().getId() + "Stop = " + stop +"\n");
 	        		}
 	        	}
 	        	
@@ -146,7 +145,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         					successor_label.setCout(courant.getCost()+(float) data.getCost(arc));
         					this.tas_label.insert(successor_label);
         					successor_label.setpere(courant.get_smt());
-        					successor_label.setinTas();        					
+        					successor_label.setinTas();        
+        					pere[successor.getId()] = courant.get_smt();
         					
         					notifyNodeReached(successor_label.get_smt()); 
         				}
@@ -161,10 +161,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	        		else {
         	        			successor_label.setinTas();        			
         	        		}   
-        	        		this.tas_label.insert(successor_label);         	        		
+        	        		this.tas_label.insert(successor_label); 
+        	        		pere[successor.getId()] = courant.get_smt();
         	                	        		
         	        		notifyNodeReached(successor_label.get_smt()); 
         				} 
+        				
+        				
         		  }
         		
         	}
@@ -179,42 +182,38 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Node node_courante = courant.get_smt();   
         Arc prev_arc = null;
         Node predecesseur = courant.getpere();
+        Boolean ok = false;
 
         List<Arc> arcs = predecesseur.getSuccessors();
-    	for(Arc a : arcs) {
-    		if(Dest == a.getDestination() && a.getOrigin() == predecesseur) {
+        
+        for(Arc a : arcs) {
+    		if(Dest == a.getDestination() && a.getOrigin() == predecesseur && ok == false) {
     			farc.add(a);
     			prev_arc = a;
+    			ok = true;
     		}
     	 }
-    	
         
-        while( node_courante.getId()  != data.getOrigin().getId()) { // A partir de l'arc trouvé on remonte jusqu'a la source	
+       
         
-        	for(Label l : list_label) {
-        		if(l != null) {
-		        	if(l.get_smt() == prev_arc.getOrigin()) {
-		        		//regarder le pere
-		        		for(Node n : graph.getNodes()) {
-		                	List<Arc> arcs1 = n.getSuccessors();
-		                	for(Arc a : arcs1) {
-		                		if(n == l.getpere() && l.get_smt() == a.getDestination() && a.getOrigin() == n) {
-		                			farc.add(a);
-		                			prev_arc = a;
-		                			node_courante = n;
-		                		}
-		                	}
-		                }
-		        	}
+        while( node_courante.getId()  != data.getOrigin().getId()) { 
+        
+        for(Arc a : arcs_retour) {
+        		if(a.getDestination() == prev_arc.getOrigin() && a.getOrigin() == pere[prev_arc.getOrigin().getId()]) {
+        			System.out.println("Passage");
+        			farc.add(a);
+        			node_courante = a.getOrigin();
+        			prev_arc = a;
+        			
         		}
         	}
+        
         }
-    	
- 
-
- 			// Reverse the path
- 			Collections.reverse(farc);
-
+        
+        for(Arc a : farc) System.out.println("Arc de " + a.getOrigin().getId() + " vers " + a.getDestination().getId());
+        System.out.println("taille" + farc.size());
+        	
+        Collections.reverse(farc);
  			// Create the final solution.
  			solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, farc));
 
