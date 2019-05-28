@@ -46,6 +46,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
     @Override
     protected ShortestPathSolution doRun() {
+    	int it = 0;
     	
         ShortestPathData data = getInputData();
         ShortestPathSolution solution = null;
@@ -78,9 +79,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // While nodes not marked exist
         while(this.tas_label.isEmpty() == false && end == false) {
         	
+        	it=0;
+        	
         	courant = this.tas_label.deleteMin();
         	courant.setmarque();  
-        	notifyNodeMarked(courant.get_smt());
+        	notifyNodeMarked(courant.get_smt());        	
         	
         	if(courant.get_smt() != data.getOrigin()) {
         	stop = false;
@@ -108,6 +111,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	
         	for(Arc arc : arcs) {
         		
+        		
         		if(arc.getOrigin() != courant.get_smt()) {
         			continue;
         		}
@@ -118,7 +122,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         			}
         		}
         		
-        		
+        		it++;
         		
        
         		
@@ -171,6 +175,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		  }
         		
         	}
+        	System.out.println("Sommet "+courant.get_smt().getId() + " a visité " + it/2 + " sommets voisins");
          } //Fin WHILE
         
         notifyDestinationReached(data.getDestination());
@@ -191,6 +196,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     			farc.add(a);
     			prev_arc = a;
     			ok = true;
+    			node_courante = a.getOrigin();
     		}
     	 }
         
@@ -200,7 +206,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         
         for(Arc a : arcs_retour) {
         		if(a.getDestination() == prev_arc.getOrigin() && a.getOrigin() == pere[prev_arc.getOrigin().getId()]) {
-        			System.out.println("Passage");
         			farc.add(a);
         			node_courante = a.getOrigin();
         			prev_arc = a;
@@ -209,9 +214,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	}
         
         }
+       
         
-        for(Arc a : farc) System.out.println("Arc de " + a.getOrigin().getId() + " vers " + a.getDestination().getId());
-        System.out.println("taille" + farc.size());
         	
         Collections.reverse(farc);
  			// Create the final solution.
