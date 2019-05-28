@@ -85,7 +85,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	if(courant.get_smt() != data.getOrigin()) {
         	stop = false;
         	
-
 	        	List<Arc> arcs_rapid = courant.getpere().getSuccessors();
 	        	
 	        	for(Arc a : arcs_rapid) {
@@ -93,17 +92,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	        			arcs_retour.add(a);
 	        			stop = true;
 	        		}
-    				
 	        	}
+	        	
 	        	
 	            
 	            
         	}
-        	
-        	 for (Arc a : arcs_retour) {
- 				//System.out.println("Ajout de l'arc de " + a.getOrigin().getId() + " vers " + a.getDestination().getId() + "Stop = " + stop +"\n");
-  				System.out.println(a);
-	            }
         	
         	if(courant.get_smt() == data.getDestination()) end = true;
 
