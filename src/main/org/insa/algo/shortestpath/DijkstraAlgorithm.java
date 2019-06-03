@@ -175,7 +175,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		  }
         		
         	}
-        	System.out.println("Sommet "+courant.get_smt().getId() + " a visité " + it/2 + " sommets voisins");
          } //Fin WHILE
         
         notifyDestinationReached(data.getDestination());
@@ -190,28 +189,28 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Boolean ok = false;
 
         List<Arc> arcs = predecesseur.getSuccessors();
-        
-        for(Arc a : arcs) {
-    		if(Dest == a.getDestination() && a.getOrigin() == predecesseur && ok == false) {
-    			farc.add(a);
-    			prev_arc = a;
-    			ok = true;
-    			node_courante = a.getOrigin();
-    		}
-    	 }
+        	for(Arc a : arcs) {
+	    		if(Dest == a.getDestination() && a.getOrigin() == predecesseur && ok == false) {
+	    			farc.add(a);
+	    			prev_arc = a;
+	    			ok = true;
+	    			node_courante = a.getOrigin();
+	    		}
+        	}	
         
        
         
         while( node_courante.getId()  != data.getOrigin().getId()) { 
-        
-        for(Arc a : arcs_retour) {
-        		if(a.getDestination() == prev_arc.getOrigin() && a.getOrigin() == pere[prev_arc.getOrigin().getId()]) {
-        			farc.add(a);
-        			node_courante = a.getOrigin();
-        			prev_arc = a;
-        			
-        		}
-        	}
+        if(prev_arc!=null) {
+	        for(Arc a : arcs_retour) {
+	        		if(a.getDestination() == prev_arc.getOrigin() && a.getOrigin() == pere[prev_arc.getOrigin().getId()]) {
+	        			farc.add(a);
+	        			node_courante = a.getOrigin();
+	        			prev_arc = a;
+	        			
+	        		}
+	        	}
+        }
         
         }
        
@@ -220,9 +219,22 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Collections.reverse(farc);
  			// Create the final solution.
  			solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, farc));
-
-        
-        
-        return solution;
-    }
+			System.out.println("---Dijkstra*"
+					+ "---\n");
+			System.out.println("Sommet d'origine : "+data.getOrigin().getId());
+			System.out.println("sommet de destination : "+data.getDestination().getId());
+			System.out.println("\n");
+			float temps=0;
+			float cost=0;
+			int heures, minutes, secondes;
+			for (Arc a: solution.getPath().getArcs()){
+				cost+=a.getLength();
+			}
+			heures = (int) cost/3600;
+			minutes = (int)(cost % 3600)/60;
+			secondes = (int) ((cost % 3600) % 60);
+			System.out.println("Coût du chemin : "+ cost);
+			//System.out.println("Coût du chemin : "+ heures +" heures, " + minutes+ " minutes, " + secondes + " secondes" );
+	        return solution;
+	    }
 }
